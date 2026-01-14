@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abstrakt Marketing Group - Inbound ELT Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #1e3a8a;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background-color: #ffffff;
+            border-right: 1px solid #e5e7eb;
+            padding: 24px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            box-shadow: 2px 0 8px rgba(0,0,0,0.05);
+        }
+
+        .logo {
+            padding: 0 24px 8px;
+            font-size: 22px;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        .logo-highlight {
+            background: linear-gradient(135deg, #c41e3a 0%, #e63946 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            padding: 0 24px 24px;
+            font-size: 11px;
+            color: #6b7280;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-item {
+            padding: 14px 24px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #4b5563;
+            font-size: 14px;
+            font-weight: 500;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            background-color: #fef2f2;
+            color: #c41e3a;
+        }
+
+        .nav-item.active {
+            background-color: #fef2f2;
+            color: #c41e3a;
+            border-left-color: #c41e3a;
+            font-weight: 600;
+        }
+
+        .nav-icon {
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 32px 40px;
+            background-color: #f5f5f5;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #c41e3a 0%, #e63946 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(196, 30, 58, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+
+        .btn-dark {
+            background: #1e3a8a;
+            color: white;
+        }
+
+        .btn-dark:hover {
+            background: #1e40af;
+        }
+
+        .last-updated {
+            font-size: 13px;
+            color: #6b7280;
+            margin-bottom: 24px;
+        }
+
+        /* Content Sections */
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1e3a8a;
+            margin-bottom: 16px;
+            margin-top: 32px;
+        }
+
+        .section-title:first-of-type {
+            margin-top: 0;
+        }
+
+        /* Metric Cards */
+        .metric-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 24px;
+            border-left: 4px solid #e5e7eb;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.08);
+        }
+
+        .metric-card.blue-accent {
+            border-left-color: #3b82f6;
+        }
+
+        .metric-card.green-accent {
+            border-left-color: #10b981;
+        }
+
+        .metric-card.purple-accent {
+            border-left-color: #8b5cf6;
+        }
+
+        .metric-card.orange-accent {
+            border-left-color: #f59e0b;
+        }
+
+        .metric-card.teal-accent {
+            border-left-color: #0d9488;
+        }
+
+        .metric-card.red-accent {
+            border-left-color: #ef4444;
+        }
+
+        .metric-label {
+            font-size: 13px;
+            color: #6b7280;
+            font-weight: 500;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .metric-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        .metric-value.positive {
+            color: #10b981;
+        }
+
+        .metric-value.negative {
+            color: #ef4444;
+        }
+
+        .metric-subtitle {
+            font-size: 13px;
+            color: #6b7280;
+            margin-top: 4px;
+        }
+
+        /* Tables */
+        .metrics-table {
+            background: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            margin-bottom: 32px;
+        }
+
+        .metrics-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .metrics-table th {
+            text-align: left;
+            padding: 16px 20px;
+            background: #f9fafb;
+            font-size: 12px;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .metrics-table td {
+            padding: 14px 20px;
+            border-bottom: 1px solid #f3f4f6;
+            font-size: 14px;
+            color: #1e3a8a;
+        }
+
+        .metrics-table tr:hover {
+            background-color: #fafafa;
+        }
+
+        .value-large {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1e3a8a;
+        }
+
+        /* Client Cards */
+        .client-breakdown-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .client-card {
+            background: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .client-card-header {
+            padding: 18px 24px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .client-card-body {
+            padding: 20px 24px;
+        }
+
+        .client-stat {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .client-stat:last-child {
+            border-bottom: none;
+        }
+
+        .client-stat-label {
+            font-size: 14px;
+            color: #4b5563;
+        }
+
+        .client-stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        .client-stat-value.green {
+            color: #10b981;
+        }
+
+        .client-stat-value.blue {
+            color: #3b82f6;
+        }
+
+        .client-stat-value.teal {
+            color: #0d9488;
+        }
+
+        /* Forecast Cards */
+        .forecast-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .forecast-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            border-top: 4px solid #3b82f6;
+        }
+
+        .forecast-card.warning {
+            border-top-color: #f59e0b;
+        }
+
+        .forecast-card.danger {
+            border-top-color: #ef4444;
+        }
+
+        .forecast-month {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1e3a8a;
+            margin-bottom: 16px;
+        }
+
+        .forecast-retention {
+            font-size: 36px;
+            font-weight: 700;
+            color: #10b981;
+            margin-bottom: 8px;
+        }
+
+        .forecast-lost {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .forecast-lost-value {
+            font-weight: 600;
+        }
+
+        .forecast-lost-value.green {
+            color: #10b981;
+        }
+
+        .forecast-lost-value.red {
+            color: #ef4444;
+        }
+
+        /* EBITDA Indicator */
+        .ebitda-badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        .ebitda-badge.success {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .ebitda-badge.warning {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .ebitda-badge.danger {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .forecast-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+        }
+    </style>
+    <script src="data/dashboard-data.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <span class="logo-highlight">Abstrakt</span> Marketing Group
+            </div>
+            <div class="subtitle">ELT - INBOUND FULFILLMENT</div>
+            
+            <div class="nav-item active" onclick="showSection('recap')">
+                <span class="nav-icon">ðŸš€</span>
+                <span>2025 Recap: Inbound</span>
+            </div>
+            <div class="nav-item" onclick="showSection('retention')">
+                <span class="nav-icon">ðŸ’°</span>
+                <span>3-Month Retention Forecast</span>
+            </div>
+            <div class="nav-item" onclick="showSection('fulfillment')">
+                <span class="nav-icon">ðŸ“ˆ</span>
+                <span>Client Fulfillment</span>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            
+            <!-- 2025 Recap: Inbound Section -->
+            <div id="recap" class="content-section active">
+                <div class="header">
+                    <h1>2025 Recap: Inbound</h1>
+                    <div class="header-actions">
+                        <button class="btn btn-primary">âœï¸ Edit Inputs</button>
+                        <button class="btn btn-secondary">ðŸŽ¯ Present</button>
+                        <button class="btn btn-dark">ðŸ“„ Export PDF</button>
+                    </div>
+                </div>
+                <div class="last-updated">Last updated: January 6, 2026, 10:30 AM</div>
+
+                <div class="section-title">2025 Year-to-Date Performance</div>
+                
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 24px;">
+                    <div class="metric-card blue-accent">
+                        <div class="metric-label">Total Revenue YTD</div>
+                        <div class="metric-value">$5,890,577</div>
+                        <div class="metric-subtitle">Full Year 2025</div>
+                    </div>
+                    
+                    <div class="metric-card green-accent">
+                        <div class="metric-label">YTD EBITDA Amount</div>
+                        <div class="metric-value">$1,516,999</div>
+                        <div class="metric-subtitle">Net Operating Income</div>
+                    </div>
+                    
+                    <div class="metric-card green-accent">
+                        <div class="metric-label">YTD EBITDA %</div>
+                        <div class="metric-value">25.8%</div>
+                        <div class="ebitda-badge warning">Below 30% Goal</div>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-bottom: 32px;">
+                    <div class="metric-card purple-accent">
+                        <div class="metric-label">2025 YTD Avg. Retention</div>
+                        <div class="metric-value positive">97.93%</div>
+                        <div class="metric-subtitle">client retention rate</div>
+                    </div>
+                    
+                    <div class="metric-card red-accent">
+                        <div class="metric-label">Avg. Clients Lost per Month</div>
+                        <div class="metric-value">3.6</div>
+                        <div class="metric-subtitle">2025 average</div>
+                    </div>
+                </div>
+
+                <div class="section-title">October & November 2025 Financial Performance</div>
+                
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 32px;">
+                    <div class="metric-card blue-accent">
+                        <div class="metric-label">November Revenue</div>
+                        <div class="metric-value">$512,993</div>
+                        <div class="metric-subtitle" style="color: #10b981; font-weight: 600;">+$4,758 from Oct</div>
+                    </div>
+                    
+                    <div class="metric-card blue-accent">
+                        <div class="metric-label">October Revenue</div>
+                        <div class="metric-value">$508,236</div>
+                        <div class="metric-subtitle">base month</div>
+                    </div>
+                    
+                    <div class="metric-card green-accent">
+                        <div class="metric-label">November EBITDA %</div>
+                        <div class="metric-value positive">32.88%</div>
+                        <div class="ebitda-badge success">Above 30% Goal!</div>
+                    </div>
+                </div>
+
+                <div class="section-title">Client Metrics</div>
+                
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-bottom: 32px;">
+                    <div class="metric-card teal-accent">
+                        <div class="metric-label">Total Inbound Clients</div>
+                        <div class="metric-value">206</div>
+                    </div>
+                    
+                    <div class="metric-card blue-accent">
+                        <div class="metric-label">2025 Net New Clients</div>
+                        <div class="metric-value">48</div>
+                    </div>
+                </div>
+
+                <div class="section-title">Content Production</div>
+                
+                <div style="display: grid; grid-template-columns: repeat(1, 1fr); gap: 24px; margin-bottom: 32px; max-width: 400px;">
+                    <div class="metric-card purple-accent">
+                        <div class="metric-label">Avg Content Created/Month</div>
+                        <div class="metric-value">142</div>
+                        <div class="metric-subtitle">pieces</div>
+                    </div>
+                </div>
+
+                <div class="section-title">Monthly Revenue Breakdown</div>
+                
+                <div class="metrics-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Month</th>
+                                <th>Revenue</th>
+                                <th>EBITDA %</th>
+                                <th>Lost Revenue</th>
+                                <th>Growth</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>January</td>
+                                <td class="value-large">$467,823</td>
+                                <td>22.14%</td>
+                                <td style="color: #10b981; font-weight: 600;">$2,465</td>
+                                <td>â€”</td>
+                            </tr>
+                            <tr>
+                                <td>February</td>
+                                <td class="value-large">$454,577</td>
+                                <td>19.87%</td>
+                                <td style="color: #10b981; font-weight: 600;">$7,275</td>
+                                <td style="color: #ef4444; font-weight: 600;">-$13,246</td>
+                            </tr>
+                            <tr>
+                                <td>March</td>
+                                <td class="value-large">$471,245</td>
+                                <td>21.56%</td>
+                                <td style="color: #ef4444; font-weight: 600;">$14,013</td>
+                                <td style="color: #10b981; font-weight: 600;">+$16,668</td>
+                            </tr>
+                            <tr>
+                                <td>April</td>
+                                <td class="value-large">$478,912</td>
+                                <td>23.42%</td>
+                                <td style="color: #10b981; font-weight: 600;">$8,750</td>
+                                <td style="color: #10b981; font-weight: 600;">+$7,667</td>
+                            </tr>
+                            <tr>
+                                <td>May</td>
+                                <td class="value-large">$485,340</td>
+                                <td>24.18%</td>
+                                <td style="color: #10b981; font-weight: 600;">$6,200</td>
+                                <td style="color: #10b981; font-weight: 600;">+$6,428</td>
+                            </tr>
+                            <tr>
+                                <td>June</td>
+                                <td class="value-large">$492,156</td>
+                                <td>25.67%</td>
+                                <td style="color: #10b981; font-weight: 600;">$9,800</td>
+                                <td style="color: #10b981; font-weight: 600;">+$6,816</td>
+                            </tr>
+                            <tr>
+                                <td>July</td>
+                                <td class="value-large">$498,723</td>
+                                <td>26.89%</td>
+                                <td style="color: #10b981; font-weight: 600;">$7,450</td>
+                                <td style="color: #10b981; font-weight: 600;">+$6,567</td>
+                            </tr>
+                            <tr>
+                                <td>August</td>
+                                <td class="value-large">$505,891</td>
+                                <td>28.34%</td>
+                                <td style="color: #ef4444; font-weight: 600;">$12,300</td>
+                                <td style="color: #10b981; font-weight: 600;">+$7,168</td>
+                            </tr>
+                            <tr>
+                                <td>September</td>
+                                <td class="value-large">$514,681</td>
+                                <td style="color: #10b981; font-weight: 600;">31.04%</td>
+                                <td style="color: #10b981; font-weight: 600;">$5,890</td>
+                                <td style="color: #10b981; font-weight: 600;">+$8,790</td>
+                            </tr>
+                            <tr>
+                                <td>October</td>
+                                <td class="value-large">$508,236</td>
+                                <td style="color: #10b981; font-weight: 600;">31.76%</td>
+                                <td style="color: #10b981; font-weight: 600;">$8,100</td>
+                                <td style="color: #ef4444; font-weight: 600;">-$6,445</td>
+                            </tr>
+                            <tr>
+                                <td>November</td>
+                                <td class="value-large">$512,993</td>
+                                <td style="color: #10b981; font-weight: 600;">32.88%</td>
+                                <td style="color: #10b981; font-weight: 600;">$4,250</td>
+                                <td style="color: #10b981; font-weight: 600;">+$4,757</td>
+                            </tr>
+                            <tr style="background: #f0fdf4;">
+                                <td><strong>December</strong></td>
+                                <td class="value-large"><strong>$500,000</strong></td>
+                                <td style="font-weight: 600;">29.5%</td>
+                                <td>--</td>
+                                <td>--</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section-title">Q4 2025 Achievement ðŸŽ‰</div>
+                
+                <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 12px; padding: 24px; margin-bottom: 32px; border-left: 4px solid #16a34a;">
+                    <div style="font-size: 18px; font-weight: 600; color: #166534; margin-bottom: 12px;">Q4 EBITDA %: 30.15% âœ… EXCEEDS GOAL!</div>
+                    <div style="color: #166534; font-size: 14px;">
+                        Three consecutive months above 30%: September (31.04%), October (31.76%), November (32.88%)
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3-Month Retention Forecast Section -->
+            <div id="retention" class="content-section">
+                <div class="header">
+                    <h1>3-Month Retention Forecast</h1>
+                    <div class="header-actions">
+                        <button class="btn btn-primary">âœï¸ Edit Inputs</button>
+                        <button class="btn btn-secondary">ðŸŽ¯ Present</button>
+                        <button class="btn btn-dark">ðŸ“„ Export PDF</button>
+                    </div>
+                </div>
+                <div class="last-updated">Last updated: January 6, 2026, 10:30 AM</div>
+
+                <div class="section-title">Q1 2026 Outlook</div>
+                
+                <div class="forecast-grid">
+                    <div class="forecast-card">
+                        <div class="forecast-month">January 2026</div>
+                        <div class="forecast-retention">98.2%</div>
+                        <div class="forecast-lost">
+                            Lost Revenue: <span class="forecast-lost-value green">$8,500</span>
+                        </div>
+                    </div>
+                    
+                    <div class="forecast-card warning">
+                        <div class="forecast-month">February 2026</div>
+                        <div class="forecast-retention">97.5%</div>
+                        <div class="forecast-lost">
+                            Lost Revenue: <span class="forecast-lost-value green">$11,200</span>
+                        </div>
+                    </div>
+                    
+                    <div class="forecast-card">
+                        <div class="forecast-month">March 2026</div>
+                        <div class="forecast-retention">97.8%</div>
+                        <div class="forecast-lost">
+                            Lost Revenue: <span class="forecast-lost-value green">$9,800</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-title">At-Risk Clients</div>
+                
+                <div class="metrics-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Client</th>
+                                <th>MRR</th>
+                                <th>Risk Level</th>
+                                <th>Reason</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>ABC Manufacturing</td>
+                                <td class="value-large">$4,200</td>
+                                <td><span style="background: #fee2e2; color: #dc2626; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600;">High</span></td>
+                                <td>Performance expectations</td>
+                                <td>Executive review scheduled</td>
+                            </tr>
+                            <tr>
+                                <td>Metro Dental Group</td>
+                                <td class="value-large">$3,500</td>
+                                <td><span style="background: #fef3c7; color: #d97706; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600;">Medium</span></td>
+                                <td>Budget constraints</td>
+                                <td>Package optimization</td>
+                            </tr>
+                            <tr>
+                                <td>Premier Auto Sales</td>
+                                <td class="value-large">$2,800</td>
+                                <td><span style="background: #fef3c7; color: #d97706; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600;">Medium</span></td>
+                                <td>Internal changes</td>
+                                <td>New stakeholder meeting</td>
+                            </tr>
+                            <tr>
+                                <td>City Plumbing Pro</td>
+                                <td class="value-large">$2,100</td>
+                                <td><span style="background: #dbeafe; color: #2563eb; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600;">Low</span></td>
+                                <td>Seasonal slowdown</td>
+                                <td>Monitoring</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 32px;">
+                    <div class="metric-card red-accent">
+                        <div class="metric-label">Total Revenue at Risk</div>
+                        <div class="metric-value">$12,600</div>
+                        <div class="metric-subtitle">Monthly recurring</div>
+                    </div>
+                    
+                    <div class="metric-card orange-accent">
+                        <div class="metric-label">At-Risk Clients</div>
+                        <div class="metric-value">4</div>
+                        <div class="metric-subtitle">Requires attention</div>
+                    </div>
+                    
+                    <div class="metric-card green-accent">
+                        <div class="metric-label">Forecasted Q1 Retention</div>
+                        <div class="metric-value positive">97.8%</div>
+                        <div class="metric-subtitle">Above 91% benchmark</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Client Fulfillment Section -->
+            <div id="fulfillment" class="content-section">
+                <div class="header">
+                    <h1>Client Breakdown & Fulfillment</h1>
+                    <div class="header-actions">
+                        <button class="btn btn-primary">âœï¸ Edit Inputs</button>
+                        <button class="btn btn-secondary">ðŸŽ¯ Present</button>
+                        <button class="btn btn-dark">ðŸ“„ Export PDF</button>
+                    </div>
+                </div>
+                <div class="last-updated">Last updated: January 6, 2026, 10:30 AM</div>
+
+                <div class="section-title">Inbound Client Breakdown</div>
+                
+                <div class="client-breakdown-grid">
+                    <div class="client-card">
+                        <div class="client-card-header" style="background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);">
+                            Client Status Overview
+                        </div>
+                        <div class="client-card-body">
+                            <div class="client-stat">
+                                <span class="client-stat-label">Implementing Clients</span>
+                                <span class="client-stat-value" style="color: #f59e0b;">35</span>
+                            </div>
+                            <div class="client-stat">
+                                <span class="client-stat-label">Active Clients</span>
+                                <span class="client-stat-value green">171</span>
+                            </div>
+                            <div class="client-stat" style="background: linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 100%); margin: 12px -24px -20px; padding: 16px 24px; border-radius: 0 0 8px 8px;">
+                                <span class="client-stat-label" style="font-weight: 600; color: #0f766e;">Total Inbound Clients</span>
+                                <span class="client-stat-value teal" style="font-size: 32px;">206</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="client-card">
+                        <div class="client-card-header" style="background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);">
+                            Service Breakdown
+                        </div>
+                        <div class="client-card-body">
+                            <div class="client-stat">
+                                <span class="client-stat-label">Website + SEO Clients</span>
+                                <span class="client-stat-value">118</span>
+                            </div>
+                            <div class="client-stat">
+                                <span class="client-stat-label" style="font-size: 13px; padding-left: 16px; color: #6b7280;">â”” Also have Paid Ad Management</span>
+                                <span class="client-stat-value" style="font-size: 16px;">11</span>
+                            </div>
+                            <div class="client-stat">
+                                <span class="client-stat-label">SEO Content Only Clients</span>
+                                <span class="client-stat-value">35</span>
+                            </div>
+                            <div class="client-stat">
+                                <span class="client-stat-label" style="font-size: 13px; padding-left: 16px; color: #6b7280;">â”” Also have Paid Ad Management</span>
+                                <span class="client-stat-value" style="font-size: 16px;">4</span>
+                            </div>
+                            <div class="client-stat">
+                                <span class="client-stat-label">PPC Only Clients</span>
+                                <span class="client-stat-value">2</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-title">2025 Average Days to Website Launch</div>
+                
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-bottom: 32px;">
+                    <div class="metric-card blue-accent">
+                        <div class="metric-label">Avg Days to Launch</div>
+                        <div class="metric-value">67</div>
+                        <div class="metric-subtitle">for 30-page websites</div>
+                    </div>
+                    
+                    <div class="metric-card green-accent">
+                        <div class="metric-label">November Launches</div>
+                        <div class="metric-value">9</div>
+                        <div class="metric-subtitle">websites delivered</div>
+                    </div>
+                </div>
+
+                <div class="section-title">Client Lifecycle Metrics</div>
+                
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-bottom: 32px;">
+                    <div class="metric-card teal-accent">
+                        <div class="metric-label">Average Client Tenure</div>
+                        <div class="metric-value">26.1 mo</div>
+                        <div class="metric-subtitle">Based on 205 clients</div>
+                    </div>
+                    
+                    <div class="metric-card teal-accent">
+                        <div class="metric-label">Median Client Tenure</div>
+                        <div class="metric-value">16.2 mo</div>
+                        <div class="metric-subtitle">Healthy distribution</div>
+                    </div>
+                </div>
+
+                <div class="section-title">Website Health</div>
+                
+                <div class="metrics-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Metric</th>
+                                <th>Count</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Websites with SSL Issues</td>
+                                <td class="value-large">3</td>
+                                <td><span style="background: #fef3c7; color: #d97706; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600;">Needs Attention</span></td>
+                            </tr>
+                            <tr>
+                                <td>Websites with Speed Issues</td>
+                                <td class="value-large">7</td>
+                                <td><span style="background: #fef3c7; color: #d97706; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600;">Optimization Needed</span></td>
+                            </tr>
+                            <tr>
+                                <td>Websites Fully Healthy</td>
+                                <td class="value-large">196</td>
+                                <td><span style="background: #dcfce7; color: #16a34a; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600;">Good</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Navigation
+        function showSection(sectionId) {
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        // Utility functions
+        function formatCurrency(value) {
+            if (value === null || value === undefined) return '--';
+            return '$' + Number(value).toLocaleString('en-US');
+        }
+        
+        function formatPercent(value) {
+            if (value === null || value === undefined) return '--';
+            return value.toFixed(2) + '%';
+        }
+        
+        function formatGrowth(value) {
+            if (value === null || value === undefined) return '–';
+            const prefix = value > 0 ? '+' : '';
+            const color = value >= 0 ? '#10b981' : '#ef4444';
+            return `<span style="color: ${color}; font-weight: 600;">${prefix}${formatCurrency(value)}</span>`;
+        }
+
+        // Populate dashboard from data
+        function populateDashboard() {
+            if (typeof DASHBOARD_DATA === 'undefined') {
+                console.error('Dashboard data not loaded. Make sure data/dashboard-data.js exists.');
+                return;
+            }
+            
+            const d = DASHBOARD_DATA;
+            const s = d.summary;
+            
+            // Update last updated timestamps
+            document.querySelectorAll('.last-updated').forEach(el => {
+                el.textContent = 'Last updated: ' + (s['Last Updated'] || 'Unknown');
+            });
+            
+            // Populate summary metrics (using data attributes)
+            populateById('total-revenue-ytd', formatCurrency(s['Total Revenue YTD']));
+            populateById('ytd-ebitda-amount', formatCurrency(s['YTD EBITDA Amount']));
+            populateById('ytd-ebitda-pct', s['YTD EBITDA %'] + '%');
+            populateById('ytd-retention', formatPercent(s['2025 YTD Avg Retention']));
+            populateById('total-clients', s['Total Inbound Clients']);
+            populateById('implementing-clients', s['Implementing Clients']);
+            populateById('active-clients', s['Active Clients']);
+            populateById('website-seo-clients', s['Website + SEO Clients']);
+            populateById('website-seo-paid', s['Website+SEO with Paid Ads']);
+            populateById('seo-only-clients', s['SEO Content Only']);
+            populateById('seo-only-paid', s['SEO Content with Paid Ads']);
+            populateById('ppc-only-clients', s['PPC Only']);
+            populateById('avg-health-score', s['Avg Website Health Score'] + '%');
+            populateById('avg-days-launch', s['Avg Days to Launch']);
+            populateById('avg-mrm-pct', s['Avg MRM %'] + '%');
+            populateById('cases-closed', s['Cases Closed']);
+            populateById('nov-launches', s['November Launches']);
+            populateById('dec-launches', s['December Launches']);
+            populateById('nov-content', s['Nov Content Created']);
+            populateById('dec-content', s['Dec Content Created']);
+            populateById('avg-tenure', s['Average Client Tenure (mo)'] + ' mo');
+            populateById('median-tenure', s['Median Client Tenure (mo)'] + ' mo');
+            populateById('avg-cancel-months', s['Avg Months to Cancel'] + ' mo');
+            
+            // Populate monthly revenue table
+            populateMonthlyRevenueTable(d.monthly_revenue);
+            
+            // Populate DSM retention table
+            populateDSMRetentionTable(d.dsm_retention);
+            
+            // Populate Q1 forecast
+            populateQ1Forecast(d.q1_forecast);
+            
+            // Populate renewals tables
+            populateRenewalsTable('jan-renewals-tbody', d.jan_renewals, 'January');
+            populateRenewalsTable('feb-renewals-tbody', d.feb_renewals, 'February');
+            populateRenewalsTable('mar-renewals-tbody', d.mar_renewals, 'March');
+            
+            // Populate cancellations
+            populateCancellationsTable(d.cancellations);
+            
+            // Populate industry table
+            populateIndustryTable(d.industry);
+            
+            // Populate website launches
+            populateWebsiteLaunchesTable(d.website_launches);
+        }
+        
+        function populateById(id, value) {
+            const el = document.getElementById(id);
+            if (el) el.textContent = value;
+        }
+        
+        function populateMonthlyRevenueTable(data) {
+            const tbody = document.getElementById('monthly-revenue-tbody');
+            if (!tbody) return;
+            
+            tbody.innerHTML = data.map((row, i) => {
+                const isLast = i === data.length - 1;
+                const ebitdaStyle = row.ebitda_pct && row.ebitda_pct >= 30 ? 'color: #10b981; font-weight: 600;' : '';
+                const lostStyle = row.lost_revenue && row.lost_revenue <= 10000 ? 'color: #10b981; font-weight: 600;' : '';
+                
+                return `<tr${isLast ? ' style="background: #f0fdf4;"' : ''}>
+                    <td>${isLast ? '<strong>' + row.month + '</strong>' : row.month}</td>
+                    <td class="value-large">${isLast ? '<strong>' + formatCurrency(row.revenue) + '</strong>' : formatCurrency(row.revenue)}</td>
+                    <td style="${ebitdaStyle}">${row.ebitda_pct ? formatPercent(row.ebitda_pct) : '--'}</td>
+                    <td style="${lostStyle}">${row.lost_revenue ? formatCurrency(row.lost_revenue) : '--'}</td>
+                    <td>${formatGrowth(row.growth)}</td>
+                </tr>`;
+            }).join('');
+        }
+        
+        function populateDSMRetentionTable(data) {
+            const tbody = document.getElementById('dsm-retention-tbody');
+            if (!tbody) return;
+            
+            tbody.innerHTML = data.map((row, i) => {
+                const isLast = i === data.length - 1;
+                const rowStyle = isLast ? ' style="background: #f0fdf4; font-weight: 600;"' : '';
+                const lostColor = row['Total Lost'] && row['Total Lost'] > -10000 ? '#10b981' : '#ef4444';
+                
+                return `<tr${rowStyle}>
+                    <td><strong>${row.Month}</strong></td>
+                    <td>${row['Aaron Graue'] ? formatPercent(row['Aaron Graue']) : '<span style="background-color: #6b7280; display: inline-block; width: 100%; height: 20px;"></span>'}</td>
+                    <td>${row['Anna Walschleger'] ? formatPercent(row['Anna Walschleger']) : '<span style="background-color: #6b7280; display: inline-block; width: 100%; height: 20px;"></span>'}</td>
+                    <td>${row['Bryan Dykes'] ? formatPercent(row['Bryan Dykes']) : '<span style="background-color: #6b7280; display: inline-block; width: 100%; height: 20px;"></span>'}</td>
+                    <td>${row['Brian Hoffman'] ? formatPercent(row['Brian Hoffman']) : '<span style="background-color: #6b7280; display: inline-block; width: 100%; height: 20px;"></span>'}</td>
+                    <td>${row['Dajah Ray'] ? formatPercent(row['Dajah Ray']) : '<span style="background-color: #6b7280; display: inline-block; width: 100%; height: 20px;"></span>'}</td>
+                    <td>${row['Jacob Yarbrough'] ? formatPercent(row['Jacob Yarbrough']) : '<span style="background-color: #6b7280; display: inline-block; width: 100%; height: 20px;"></span>'}</td>
+                    <td>${row['John Halcomb'] ? formatPercent(row['John Halcomb']) : '<span style="background-color: #6b7280; display: inline-block; width: 100%; height: 20px;"></span>'}</td>
+                    <td>${row['DOTM'] || '<span style="background-color: #6b7280; display: inline-block; width: 100%; height: 20px;"></span>'}</td>
+                    <td style="color: ${lostColor};">${row['Total Lost'] ? '(' + formatCurrency(Math.abs(row['Total Lost'])) + ')' : '--'}</td>
+                    <td><strong>${row['Retention'] ? formatPercent(row['Retention']) : '--'}</strong></td>
+                </tr>`;
+            }).join('');
+        }
+        
+        function populateQ1Forecast(data) {
+            if (!data || data.length < 3) return;
+            
+            // Populate forecast cards
+            data.forEach((month, i) => {
+                const prefix = ['jan', 'feb', 'mar'][i];
+                populateById(prefix + '-impact', formatCurrency(month.net_revenue_impact));
+                populateById(prefix + '-cancellations', month.cancellation_count + ' cancellations');
+                populateById(prefix + '-contracts', month.contracts_renewing + ' Contracts');
+                populateById(prefix + '-renewal-mrr', formatCurrency(month.renewal_mrr));
+                populateById(prefix + '-first-year', month.first_year_renewals);
+            });
+        }
+        
+        function populateRenewalsTable(tbodyId, data, month) {
+            const tbody = document.getElementById(tbodyId);
+            if (!tbody) return;
+            
+            const total = data.reduce((sum, row) => sum + (row.mrr || 0), 0);
+            
+            let html = data.map(row => `<tr>
+                <td>${row.client}</td>
+                <td>${row.renewal_date}</td>
+                <td>${row.dsm}</td>
+                <td>${formatCurrency(row.mrr)}</td>
+                <td>${row.contract_length}</td>
+            </tr>`).join('');
+            
+            html += `<tr style="background: #f3f4f6; font-weight: 600;">
+                <td colspan="3"><strong>Total: ${data.length} Clients</strong></td>
+                <td><strong>${formatCurrency(total)}</strong></td>
+                <td style="background-color: #6b7280;"></td>
+            </tr>`;
+            
+            tbody.innerHTML = html;
+            
+            // Update title
+            const prefix = month.toLowerCase().substring(0,3);
+            const titleEl = document.getElementById(prefix + '-renewals-title');
+            if (titleEl) {
+                titleEl.textContent = `${month} 2026 Active Renewals (${data.length} Clients - ${formatCurrency(total)} MRR)`;
+            }
+        }
+        
+        function populateCancellationsTable(data) {
+            ['January', 'February', 'March'].forEach(month => {
+                const prefix = month.toLowerCase().substring(0,3);
+                const tbody = document.getElementById(prefix + '-cancellations-tbody');
+                if (!tbody) return;
+                
+                const monthData = data.filter(row => row.month === month);
+                const total = monthData.reduce((sum, row) => sum + (row.amount || 0), 0);
+                
+                let html = monthData.map(row => {
+                    const color = row.amount >= 0 ? '#10b981' : '#ef4444';
+                    return `<tr>
+                        <td>${row.client}</td>
+                        <td>${row.type}</td>
+                        <td>${row.dsm}</td>
+                        <td style="color: ${color}; font-weight: 600;">${formatCurrency(row.amount)}</td>
+                    </tr>`;
+                }).join('');
+                
+                html += `<tr style="background: #f3f4f6; font-weight: 600;">
+                    <td colspan="3"><strong>TOTAL</strong></td>
+                    <td style="color: #ef4444; font-weight: 700;">(${formatCurrency(Math.abs(total))})</td>
+                </tr>`;
+                
+                tbody.innerHTML = html;
+            });
+        }
+        
+        function populateIndustryTable(data) {
+            const tbody = document.getElementById('industry-tbody');
+            if (!tbody) return;
+            
+            const highlights = {
+                'Other': '#fef3c7',
+                'IT/Cyber Security/MSP': '#dbeafe',
+                'Elevators': '#99f6e4'
+            };
+            
+            tbody.innerHTML = data.map(row => {
+                const bg = highlights[row.industry] ? ` style="background-color: ${highlights[row.industry]};"` : '';
+                return `<tr${bg}>
+                    <td>${row.industry}</td>
+                    <td style="text-align: right;" class="value-large">${row.count}</td>
+                </tr>`;
+            }).join('');
+        }
+        
+        function populateWebsiteLaunchesTable(data) {
+            const tbody = document.getElementById('launches-tbody');
+            if (!tbody) return;
+            
+            tbody.innerHTML = data.map(row => `<tr>
+                <td class="value-large">${row.client}</td>
+                <td>${row.dpm}</td>
+                <td>${row.kickoff}</td>
+                <td>${row.launch_date}</td>
+                <td>${row.days_to_launch}</td>
+            </tr>`).join('');
+        }
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', populateDashboard);
+    </script>
+</body>
+</html>
