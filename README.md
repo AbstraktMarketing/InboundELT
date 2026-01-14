@@ -43,7 +43,7 @@ The `data/dashboard-data.xlsx` file contains these sheets:
 
 ```
 inbound-dashboard/
-├── dashboard.html          # Main dashboard (open in browser)
+├── index.html              # Main dashboard (open in browser)
 ├── data/
 │   ├── dashboard-data.xlsx # ← EDIT THIS FILE
 │   ├── dashboard-data.json # Auto-generated
